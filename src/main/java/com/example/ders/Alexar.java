@@ -22,7 +22,9 @@ public class Alexar {
             if(String.valueOf(charTokes[n]).isBlank()
                     || !isAlphaNumeric(charTokes[n])
                     || n==charTokes.length-1
-                    || String.valueOf(charTokes[n]).equals("\n"))
+                    || String.valueOf(charTokes[n]).equals("\n")
+                    ||String.valueOf(charTokes[n]).isEmpty())
+
             {
                 tokens.add(new String(slicer(counter, n, charTokes)));
                 counter = n+1;
@@ -35,7 +37,7 @@ public class Alexar {
 
     private static char[] slicer(int start, int end, char[] charTokens)
     {
-        char[] newCharArray = new char[end-start+1];
+        char[] newCharArray = new char[end-start];
         for(int i = start, n=0;  i<end; i++, n++)
         {
             newCharArray[n] = charTokens[i];

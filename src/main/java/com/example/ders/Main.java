@@ -26,6 +26,8 @@ public class Main {
 
         //Tokenizer tokens = new Tokenizer();
         System.out.println(Alexar.tokenize(bodyContentHandler.toString()).toString());
+        System.out.println(Dexter.giveIndex(Alexar.tokenize(bodyContentHandler.toString()))
+                .toString());
 
 
     }
