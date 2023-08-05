@@ -14,20 +14,24 @@ public class Alexar {
     }
     public static ArrayList<String> tokenize(String content)
     {
-        char[] charTokes = charTokenizer(content);
+        char[] charTokens = charTokenizer(content);
         int n = 0;
         int counter = 0;
-        while(n<charTokes.length)
+        StringBuilder builder = new StringBuilder();
+        while(n<charTokens.length)
         {
-            if(String.valueOf(charTokes[n]).isBlank()
-                    || !isAlphaNumeric(charTokes[n])
-                    || n==charTokes.length-1
-                    || String.valueOf(charTokes[n]).equals("\n")
-                    ||String.valueOf(charTokes[n]).isEmpty())
+            if(!String.valueOf(charTokens[n]).isBlank()
+                    && isAlphaNumeric(charTokens[n])
+                    && !String.valueOf(charTokens[n]).contains("\n"))
 
             {
-                tokens.add(new String(slicer(counter, n, charTokes)));
-                counter = n+1;
+                builder.append(charTokens[n]);
+            }
+
+            else
+            {
+                tokens.add(builder.toString());
+                builder.delete(0, builder.length()-1);
             }
             n++;
         }
