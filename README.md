@@ -1,2 +1,2 @@
-# jers
-Java Based Engine for Resume Searching
+# JESI
+Java based Engine for Searching and Indexing Text PDFS
