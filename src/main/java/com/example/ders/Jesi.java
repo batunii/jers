@@ -44,6 +44,7 @@ public class Jesi {
             for (File file : files) {
                 String parsed = parsePDF(file.getAbsolutePath());
                 dexter.indexFile(parsed, file.getName());
+                System.out.println("Indexing file: "+file.getName()+"...");
             }
            fileIndex = dexter.getFileIndex();
             //System.out.println(fileIndex);

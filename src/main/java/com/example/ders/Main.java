@@ -27,7 +27,7 @@ public class Main {
         //System.out.println((new Jesi()).index("C:\\Users\\Shrey\\Downloads").orElseThrow());
 
         Jesi jesi = new Jesi();
-        jesi.index("C:\\Users\\Shrey\\Code\\JavaDers\\jers\\Test");
+        jesi.index("Test");
         System.out.println(jesi.search("antenna"));
 
 
