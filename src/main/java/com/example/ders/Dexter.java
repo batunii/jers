@@ -17,13 +17,6 @@ public class Dexter {
             else
                 index.put(token, 1);
 
-            if(index.get(token)>259) {
-                token.chars().forEach(System.out::println);
-                if(token.isEmpty())
-                {
-                    System.out.println("Yes");
-                }
-            }
         }
         return index;
     }
