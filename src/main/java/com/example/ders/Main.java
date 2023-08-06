@@ -24,7 +24,7 @@ public class Main {
 //            System.out.println(file.getAbsolutePath());
 //        }
 
-        System.out.println(new Jesi().index("C:\\Users\\Shrey\\Downloads").toString());
+        System.out.println(new Jesi().index("C:\\Users\\Shrey\\Downloads").orElseThrow());
 
 
     }
