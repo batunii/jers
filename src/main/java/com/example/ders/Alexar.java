@@ -26,7 +26,9 @@ public class Alexar {
                     ||String.valueOf(charTokes[n]).isEmpty())
 
             {
-                tokens.add(new String(slicer(counter, n, charTokes)));
+                if(slicer(counter,n,charTokes).length!=0)
+                    tokens.add(new String(slicer(counter, n, charTokes)));
+
                 counter = n+1;
             }
             n++;
