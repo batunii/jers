@@ -16,6 +16,8 @@ import java.util.Optional;
 
 public class Jesi {
 
+    static HashMap<String, HashMap<String,Integer>> fileIndex = new HashMap<>();
+    Dexter dexter = new Dexter();
     private String parsePDF(String filePath) throws IOException, TikaException, SAXException {
         BodyContentHandler bodyContentHandler = new BodyContentHandler();
         File file = new File(filePath);
@@ -28,7 +30,7 @@ public class Jesi {
         return bodyContentHandler.toString();
     }
 
-    public Optional<HashMap<String, HashMap<String, Integer>>> index(String folderPath) throws TikaException, IOException, SAXException {
+    public void index(String folderPath) throws TikaException, IOException, SAXException {
         File directory = new File(folderPath);
         File [] files = directory.listFiles(new FileFilter() {
             @Override
@@ -41,20 +43,29 @@ public class Jesi {
         try {
             for (File file : files) {
                 String parsed = parsePDF(file.getAbsolutePath());
-                (new Dexter()).indexFile(parsed, file.getName());
+                dexter.indexFile(parsed, file.getName());
             }
-            return Optional.ofNullable(Dexter.getFileIndex());
+           fileIndex = dexter.getFileIndex();
+            //System.out.println(fileIndex);
         }
         catch (Exception e)
         {
             System.out.println("ERROR : In reading files due to: "+e.getMessage());
         }
-        return Optional.empty();
+
     }
 
-    public HashMap<Integer, String> search(String searchTerm)
+    public HashMap<String, Integer> search(String searchTerm)
     {
-        //todo
-        return null;
+        HashMap<String, Integer>score = new HashMap<>();
+
+        for(String fileName : fileIndex.keySet())
+        {
+            if(fileIndex.get(fileName).containsKey(searchTerm.toLowerCase()))
+            {
+                score.put(fileName,fileIndex.get(fileName).get(searchTerm.toLowerCase()));
+            }
+        }
+        return score;
     }
 }

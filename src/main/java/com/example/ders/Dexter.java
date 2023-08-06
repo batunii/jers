@@ -6,8 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class Dexter {
-    private static final HashMap<String, HashMap<String, Integer>> fileIndex = new HashMap<>();
-
+    private final HashMap<String, HashMap<String, Integer>> fileIndex = new HashMap<>();
     private HashMap<String, Integer> giveIndex(ArrayList<String> tokens)
     {
         HashMap<String, Integer> index = new HashMap<>();
@@ -27,11 +26,11 @@ public class Dexter {
     }
     public void indexFile(String content, String file_name)
     {
-        HashMap<String, Integer> index = giveIndex((new Alexar()).tokenize(content));
+        HashMap<String, Integer> index = giveIndex(new Alexar().tokenize(content));
         fileIndex.put(file_name,index);
     }
 
-    public static HashMap<String, HashMap<String, Integer>> getFileIndex() {
+    public HashMap<String, HashMap<String, Integer>> getFileIndex() {
         return fileIndex;
     }
 }

@@ -24,7 +24,11 @@ public class Main {
 //            System.out.println(file.getAbsolutePath());
 //        }
 
-        System.out.println(new Jesi().index("C:\\Users\\Shrey\\Downloads").orElseThrow());
+        //System.out.println((new Jesi()).index("C:\\Users\\Shrey\\Downloads").orElseThrow());
+
+        Jesi jesi = new Jesi();
+        jesi.index("C:\\Users\\Shrey\\Code\\JavaDers\\jers\\Test");
+        System.out.println(jesi.search("antenna"));
 
 
     }
