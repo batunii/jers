@@ -28,7 +28,7 @@ public class Main {
 
         Jesi jesi = new Jesi();
         jesi.index("Test");
-        System.out.println(jesi.search("antenna"));
+        System.out.println(jesi.search("antenna Shreyansh"));
 
 
     }

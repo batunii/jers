@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -59,14 +60,32 @@ public class Jesi {
     public HashMap<String, Integer> search(String searchTerm)
     {
         HashMap<String, Integer>score = new HashMap<>();
-
-        for(String fileName : fileIndex.keySet())
+        ArrayList<String> tokens = (new Alexar()).tokenize(searchTerm);
+        for(String token : tokens)
         {
-            if(fileIndex.get(fileName).containsKey(searchTerm.toLowerCase()))
+            System.out.println(token);
+            for(String fileName : fileIndex.keySet())
             {
-                score.put(fileName,fileIndex.get(fileName).get(searchTerm.toLowerCase()));
+                if(fileIndex.get(fileName).containsKey(token))
+                {
+                    score.computeIfPresent(fileName,
+                            (k,v)-> v+fileIndex.get(fileName).get(token));
+                    score.putIfAbsent(fileName,fileIndex.get(fileName).get(token));
+                }
             }
         }
+
         return score;
+    }
+
+    private double tf()
+    {
+        // TODO: 07-08-2023 Add a TF function which returns the TF
+        return 0;
+    }
+    private double idf()
+    {
+        // TODO: 07-08-2023 Add the IDF function which calculates the IDF part!
+        return 0;
     }
 }
