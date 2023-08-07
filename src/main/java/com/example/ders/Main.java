@@ -1,33 +1,34 @@
 package com.example.ders;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.pdf.PDFParser;
-import org.apache.tika.sax.BodyContentHandler;
+import java.io.FileFilter;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         System.out.println("Hello world!");
+//         Jesi jesi = new Jesi();
+//         jesi.getIndex();
 
-        BodyContentHandler bodyContentHandler = new BodyContentHandler(); 
-        String filePath = "Shreyansh_Resume.pdf";
-        File file = new File(filePath);
-        FileInputStream inputStream = new FileInputStream(file);
-        Metadata data = new Metadata();
-        ParseContext contex = new ParseContext(); 
-        PDFParser parser = new PDFParser();
-        parser.parse(inputStream, bodyContentHandler, data, contex);
-        //System.out.println(bodyContentHandler.toString());
+//        File directory = new File("C:\\Users\\Shrey\\Downloads");
+//        File [] files = directory.listFiles(new FileFilter() {
+//            @Override
+//            public boolean accept(File pathname) {
+//                return pathname.isFile() &&
+//                        pathname.getAbsolutePath().toLowerCase().endsWith(".pdf");
+//            }
+//        });
 
-        //Tokenizer tokens = new Tokenizer();
-        System.out.println(Alexar.tokenize(bodyContentHandler.toString()).toString());
-        System.out.println(Dexter.giveIndex(Alexar.tokenize(bodyContentHandler.toString()))
-                .toString());
+//        assert files != null;
+//        for (File file : files)
+//        {
+//            System.out.println(file.getAbsolutePath());
+//        }
+
+        //System.out.println((new Jesi()).index("C:\\Users\\Shrey\\Downloads").orElseThrow());
+
+        Jesi jesi = new Jesi();
+        jesi.index("Test");
+        System.out.println(jesi.search("antenna"));
 
 
     }

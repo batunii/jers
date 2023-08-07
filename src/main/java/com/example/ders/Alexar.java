@@ -4,40 +4,38 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Alexar {
-    static ArrayList<String> tokens = new ArrayList<>();
-    private static char[] charTokenizer(String str)
+    ArrayList<String> tokens = new ArrayList<>();
+    private char[] charTokenizer(String str)
     {
-        str = str.strip();
-        System.out.println(str);
+        str = str.strip().toLowerCase();
         return str.toCharArray();
 
     }
-    public static ArrayList<String> tokenize(String content)
+    public ArrayList<String> tokenize(String content)
     {
-        char[] charTokes = charTokenizer(content);
+        char[] charTokens = charTokenizer(content);
         int n = 0;
         int counter = 0;
-        while(n<charTokes.length)
+        while(n<charTokens.length)
         {
-            if(String.valueOf(charTokes[n]).isBlank()
-                    || !isAlphaNumeric(charTokes[n])
-                    || n==charTokes.length-1
-                    || String.valueOf(charTokes[n]).equals("\n")
-                    ||String.valueOf(charTokes[n]).isEmpty())
+            if(String.valueOf(charTokens[n]).isBlank()
+                    || !isAlphaNumeric(charTokens[n])
+                    || n==charTokens.length-1
+                    || String.valueOf(charTokens[n]).equals("\n")
+                    ||String.valueOf(charTokens[n]).isEmpty())
 
             {
-                if(slicer(counter,n,charTokes).length!=0)
-                    tokens.add(new String(slicer(counter, n, charTokes)));
+                if(slicer(counter,n,charTokens).length!=0)
+                    tokens.add(new String(slicer(counter, n, charTokens)));
 
                 counter = n+1;
             }
             n++;
         }
-
         return tokens;
     }
 
-    private static char[] slicer(int start, int end, char[] charTokens)
+    private char[] slicer(int start, int end, char[] charTokens)
     {
         char[] newCharArray = new char[end-start];
         for(int i = start, n=0;  i<end; i++, n++)
@@ -47,7 +45,7 @@ public class Alexar {
         return newCharArray;
     }
 
-    private static boolean isAlphaNumeric(char charToken)
+    private boolean isAlphaNumeric(char charToken)
     {
         return (charToken >= '0' & charToken <= '9') ||
                 (charToken >= 'a' && charToken <= 'z') ||
