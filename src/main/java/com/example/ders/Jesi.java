@@ -11,9 +11,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.stream.Stream;
+import java.util.*;
 
 public class Jesi {
 
@@ -44,14 +42,14 @@ public class Jesi {
         assert files != null;
         for (File file : files) {
             try {
-
                 String parsed = parsePDF(file.getAbsolutePath());
                 dexter.indexFile(parsed, file.getName());
                 System.out.println("Indexing file: " + file.getName() + "...");
             }
             //System.out.println(fileIndex);
             catch (Exception e) {
-                System.out.println("ERROR : In reading file : " + file.getName() + " due to: " + e.getMessage());
+                System.out.println("ERROR : In reading file : " +
+                        file.getName() + " due to: " + e.getMessage());
             }
 
         }
@@ -63,16 +61,15 @@ public class Jesi {
         HashMap<String, Double>score = new HashMap<>();
         ArrayList<String> tokens = (new Alexar()).tokenize(searchTerm);
         for(String token : tokens)
-        {
-            System.out.println(token);
+        {System.out.println(token);
             for(String fileName : fileIndex.keySet())
             {
                 if(fileIndex.get(fileName).containsKey(token))
                 {
-                    double tf  = tf(fileIndex.get(fileName).get(token),fileIndex.get(fileName).size());
+                    double tf  = tf(fileIndex.get(fileName).get(token)
+                            ,fileIndex.get(fileName).size());
                     double idf = idf(token);
                     double tfIdf = tf*idf;
-
                     System.out.println(token+" => "+tfIdf);
                     score.computeIfPresent(fileName,
                             (k,v)-> v+tfIdf);
@@ -95,6 +92,8 @@ public class Jesi {
         double denominator = fileIndex.keySet().stream()
                 .filter(e->fileIndex.get(e).containsKey(token)).count()+1;
 
-        return Math.log10(numerator/denominator);
+        //System.out.println(token+"=>"+numerator + " " + denominator);
+
+        return Math.log10(Math.max(numerator/denominator, 1));
     }
 }
