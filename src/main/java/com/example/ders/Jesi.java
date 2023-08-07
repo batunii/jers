@@ -13,7 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
+import java.util.stream.Stream;
 
 public class Jesi {
 
@@ -33,33 +33,34 @@ public class Jesi {
 
     public void index(String folderPath) throws TikaException, IOException, SAXException {
         File directory = new File(folderPath);
-        File [] files = directory.listFiles(new FileFilter() {
+        File[] files = directory.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
                 return pathname.isFile() &&
                         pathname.getAbsolutePath()
                                 .toLowerCase().endsWith(".pdf");
-            }});
+            }
+        });
         assert files != null;
-        try {
-            for (File file : files) {
+        for (File file : files) {
+            try {
+
                 String parsed = parsePDF(file.getAbsolutePath());
                 dexter.indexFile(parsed, file.getName());
-                System.out.println("Indexing file: "+file.getName()+"...");
+                System.out.println("Indexing file: " + file.getName() + "...");
             }
-           fileIndex = dexter.getFileIndex();
             //System.out.println(fileIndex);
-        }
-        catch (Exception e)
-        {
-            System.out.println("ERROR : In reading files due to: "+e.getMessage());
-        }
+            catch (Exception e) {
+                System.out.println("ERROR : In reading file : " + file.getName() + " due to: " + e.getMessage());
+            }
 
+        }
+        fileIndex = dexter.getFileIndex();
     }
 
-    public HashMap<String, Integer> search(String searchTerm)
+    public HashMap<String, Double> search(String searchTerm)
     {
-        HashMap<String, Integer>score = new HashMap<>();
+        HashMap<String, Double>score = new HashMap<>();
         ArrayList<String> tokens = (new Alexar()).tokenize(searchTerm);
         for(String token : tokens)
         {
@@ -68,9 +69,14 @@ public class Jesi {
             {
                 if(fileIndex.get(fileName).containsKey(token))
                 {
+                    double tf  = tf(fileIndex.get(fileName).get(token),fileIndex.get(fileName).size());
+                    double idf = idf(token);
+                    double tfIdf = tf*idf;
+
+                    System.out.println(token+" => "+tfIdf);
                     score.computeIfPresent(fileName,
-                            (k,v)-> v+fileIndex.get(fileName).get(token));
-                    score.putIfAbsent(fileName,fileIndex.get(fileName).get(token));
+                            (k,v)-> v+tfIdf);
+                    score.putIfAbsent(fileName,tfIdf);
                 }
             }
         }
@@ -78,14 +84,17 @@ public class Jesi {
         return score;
     }
 
-    private double tf()
+    private double tf(int t, int d )
     {
-        // TODO: 07-08-2023 Add a TF function which returns the TF
-        return 0;
+        return  (double) t/d;
+
     }
-    private double idf()
+    private double idf(String token)
     {
-        // TODO: 07-08-2023 Add the IDF function which calculates the IDF part!
-        return 0;
+        double numerator = fileIndex.size();
+        double denominator = fileIndex.keySet().stream()
+                .filter(e->fileIndex.get(e).containsKey(token)).count()+1;
+
+        return Math.log10(numerator/denominator);
     }
 }
