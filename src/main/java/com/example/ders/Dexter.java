@@ -6,10 +6,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class Dexter {
-    static HashMap<String, Integer> index = new HashMap<>();
-
-    public static HashMap<String, Integer> giveIndex(ArrayList<String>tokens)
+    private final HashMap<String, HashMap<String, Integer>> fileIndex = new HashMap<>();
+    private HashMap<String, Integer> giveIndex(ArrayList<String> tokens)
     {
+        HashMap<String, Integer> index = new HashMap<>();
+
         for(String token : tokens)
         {
             if(index.containsKey(token))
@@ -18,6 +19,18 @@ public class Dexter {
                 index.put(token, 1);
 
         }
+
+        //System.out.println(index);
+
         return index;
+    }
+    public void indexFile(String content, String file_name)
+    {
+        HashMap<String, Integer> index = giveIndex(new Alexar().tokenize(content));
+        fileIndex.put(file_name,index);
+    }
+
+    public HashMap<String, HashMap<String, Integer>> getFileIndex() {
+        return fileIndex;
     }
 }
