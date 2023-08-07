@@ -11,8 +11,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 public class Jesi {
 
@@ -32,41 +31,69 @@ public class Jesi {
 
     public void index(String folderPath) throws TikaException, IOException, SAXException {
         File directory = new File(folderPath);
-        File [] files = directory.listFiles(new FileFilter() {
+        File[] files = directory.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
                 return pathname.isFile() &&
                         pathname.getAbsolutePath()
                                 .toLowerCase().endsWith(".pdf");
-            }});
+            }
+        });
         assert files != null;
-        try {
-            for (File file : files) {
+        for (File file : files) {
+            try {
                 String parsed = parsePDF(file.getAbsolutePath());
                 dexter.indexFile(parsed, file.getName());
-                System.out.println("Indexing file: "+file.getName()+"...");
+                System.out.println("Indexing file: " + file.getName() + "...");
             }
-           fileIndex = dexter.getFileIndex();
             //System.out.println(fileIndex);
-        }
-        catch (Exception e)
-        {
-            System.out.println("ERROR : In reading files due to: "+e.getMessage());
-        }
+            catch (Exception e) {
+                System.out.println("ERROR : In reading file : " +
+                        file.getName() + " due to: " + e.getMessage());
+            }
 
+        }
+        fileIndex = dexter.getFileIndex();
     }
 
-    public HashMap<String, Integer> search(String searchTerm)
+    public HashMap<String, Double> search(String searchTerm)
     {
-        HashMap<String, Integer>score = new HashMap<>();
-
-        for(String fileName : fileIndex.keySet())
-        {
-            if(fileIndex.get(fileName).containsKey(searchTerm.toLowerCase()))
+        HashMap<String, Double>score = new HashMap<>();
+        ArrayList<String> tokens = (new Alexar()).tokenize(searchTerm);
+        for(String token : tokens)
+        {System.out.println(token);
+            for(String fileName : fileIndex.keySet())
             {
-                score.put(fileName,fileIndex.get(fileName).get(searchTerm.toLowerCase()));
+                if(fileIndex.get(fileName).containsKey(token))
+                {
+                    double tf  = tf(fileIndex.get(fileName).get(token)
+                            ,fileIndex.get(fileName).size());
+                    double idf = idf(token);
+                    double tfIdf = tf*idf;
+                    System.out.println(token+" => "+tfIdf);
+                    score.computeIfPresent(fileName,
+                            (k,v)-> v+tfIdf);
+                    score.putIfAbsent(fileName,tfIdf);
+                }
             }
         }
+
         return score;
+    }
+
+    private double tf(int t, int d )
+    {
+        return  (double) t/d;
+
+    }
+    private double idf(String token)
+    {
+        double numerator = fileIndex.size();
+        double denominator = fileIndex.keySet().stream()
+                .filter(e->fileIndex.get(e).containsKey(token)).count()+1;
+
+        //System.out.println(token+"=>"+numerator + " " + denominator);
+
+        return Math.log10(Math.max(numerator/denominator, 1));
     }
 }

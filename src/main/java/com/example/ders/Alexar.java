@@ -18,15 +18,17 @@ public class Alexar {
         int counter = 0;
         while(n<charTokens.length)
         {
-            if(String.valueOf(charTokens[n]).isBlank()
-                    || !isAlphaNumeric(charTokens[n])
-                    || n==charTokens.length-1
-                    || String.valueOf(charTokens[n]).equals("\n")
-                    ||String.valueOf(charTokens[n]).isEmpty())
-
+            if(!isAlphaNumeric(charTokens[n]))
             {
                 if(slicer(counter,n,charTokens).length!=0)
                     tokens.add(new String(slicer(counter, n, charTokens)));
+
+                counter = n+1;
+            }
+            else if(n==charTokens.length-1)
+            {
+                if(slicer(counter,n+1,charTokens).length!=0)
+                    tokens.add(new String(slicer(counter, n+1, charTokens)));
 
                 counter = n+1;
             }

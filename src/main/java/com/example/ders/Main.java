@@ -27,8 +27,8 @@ public class Main {
         //System.out.println((new Jesi()).index("C:\\Users\\Shrey\\Downloads").orElseThrow());
 
         Jesi jesi = new Jesi();
-        jesi.index("Test");
-        System.out.println(jesi.search("antenna"));
+        jesi.index("C:\\Users\\Shrey\\Desktop\\TestPDFs");
+        System.out.println(jesi.search("Wells Fargo for Shreyansh"));
 
 
     }
