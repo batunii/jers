@@ -56,29 +56,33 @@ public class Jesi {
         fileIndex = dexter.getFileIndex();
     }
 
-    public HashMap<String, Double> search(String searchTerm)
+    public TreeMap<String, Double> search(String searchTerm)
     {
         HashMap<String, Double>score = new HashMap<>();
         ArrayList<String> tokens = (new Alexar()).tokenize(searchTerm);
-        for(String token : tokens)
-        {System.out.println(token);
+
             for(String fileName : fileIndex.keySet())
             {
-                if(fileIndex.get(fileName).containsKey(token))
+                System.out.println(fileName);
+                for(String token : tokens)
                 {
-                    double tf  = tf(fileIndex.get(fileName).get(token)
-                            ,fileIndex.get(fileName).size());
-                    double idf = idf(token);
-                    double tfIdf = tf*idf;
-                    System.out.println(token+" => "+tfIdf);
-                    score.computeIfPresent(fileName,
-                            (k,v)-> v+tfIdf);
-                    score.putIfAbsent(fileName,tfIdf);
+                    if(fileIndex.get(fileName).containsKey(token)) {
+                        double tf = tf(fileIndex.get(fileName).get(token)
+                                , fileIndex.get(fileName).size());
+                        double idf = idf(token);
+                        double tfIdf = tf * idf;
+                        score.computeIfPresent(fileName,
+                                (k, v) -> v + tfIdf);
+                        score.putIfAbsent(fileName, tfIdf);
+                        System.out.println(token + " => "+ tfIdf);
+                    }
                 }
             }
-        }
 
-        return score;
+        final TreeMap<String, Double>rankings = new TreeMap<>(compare(score));
+        System.out.println(score);
+        rankings.putAll(score);
+        return rankings;
     }
 
     private double tf(int t, int d )
@@ -95,5 +99,10 @@ public class Jesi {
         //System.out.println(token+"=>"+numerator + " " + denominator);
 
         return Math.log10(Math.max(numerator/denominator, 1));
+    }
+
+    private static Comparator<String> compare(HashMap<String, Double>map)
+    {
+        return ((o1, o2) -> (int)(map.get(o2)-map.get(o1)));
     }
 }
