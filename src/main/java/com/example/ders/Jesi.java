@@ -1,16 +1,14 @@
 package com.example.ders;
 
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.pdf.PDFParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.xml.sax.SAXException;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class Jesi {
@@ -21,10 +19,11 @@ public class Jesi {
         BodyContentHandler bodyContentHandler = new BodyContentHandler();
         File file = new File(filePath);
         FileInputStream inputStream = new FileInputStream(file);
+        InputStream stream = TikaInputStream.get(inputStream);
         Metadata data = new Metadata();
         ParseContext contex = new ParseContext();
         PDFParser parser = new PDFParser();
-        parser.parse(inputStream, bodyContentHandler, data, contex);
+        parser.parse(stream, bodyContentHandler, data, contex);
 
         return bodyContentHandler.toString();
     }
@@ -40,6 +39,7 @@ public class Jesi {
             }
         });
         assert files != null;
+        long startTime = System.nanoTime();
         for (File file : files) {
             try {
                 String parsed = parsePDF(file.getAbsolutePath());
@@ -53,6 +53,7 @@ public class Jesi {
             }
 
         }
+        System.out.println("------"+(System.nanoTime()-startTime)/1_000_000_000+"------");
         fileIndex = dexter.getFileIndex();
     }
 
