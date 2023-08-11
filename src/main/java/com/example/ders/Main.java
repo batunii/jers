@@ -33,7 +33,6 @@ public class Main {
 
 
         Jesi jesi = new Jesi();
-        //logger.info("Called JESI");
         jesi.index("C:\\Users\\Shrey\\Desktop\\TestPDFs");
         System.out.println(jesi.search("Wells Fargo for Shreyansh"));
 

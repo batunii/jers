@@ -6,10 +6,12 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.pdf.PDFParser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.codelibs.jhighlight.fastutil.Hash;
 import org.xml.sax.SAXException;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Jesi {
 
@@ -57,7 +59,7 @@ public class Jesi {
         fileIndex = dexter.getFileIndex();
     }
 
-    public TreeMap<String, Double> search(String searchTerm)
+    public Map<String, Double> search(String searchTerm)
     {
         HashMap<String, Double>score = new HashMap<>();
         ArrayList<String> tokens = (new Alexar()).tokenize(searchTerm);
@@ -80,10 +82,10 @@ public class Jesi {
                 }
             }
 
-        final TreeMap<String, Double>rankings = new TreeMap<>(compare(score));
-        System.out.println(score);
-        rankings.putAll(score);
-        return rankings;
+        return score.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                        (k,v)->v, LinkedHashMap::new));
     }
 
     private double tf(int t, int d )
@@ -102,8 +104,4 @@ public class Jesi {
         return Math.log10(Math.max(numerator/denominator, 1));
     }
 
-    private static Comparator<String> compare(HashMap<String, Double>map)
-    {
-        return ((o1, o2) -> (int)(map.get(o2)-map.get(o1)));
-    }
 }
