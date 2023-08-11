@@ -83,9 +83,9 @@ public class Jesi {
             }
 
         return score.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .sorted((e1, e2)->e2.getValue()>e1.getValue()?1:e2.getValue().equals(e1.getValue())?0:-1)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                        (k,v)->v, LinkedHashMap::new));
+                        (v1,v2)->v2, LinkedHashMap::new));
     }
 
     private double tf(int t, int d )
