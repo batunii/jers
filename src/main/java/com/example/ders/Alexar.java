@@ -1,7 +1,6 @@
 package com.example.ders;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Alexar {
     ArrayList<String> tokens = new ArrayList<>();

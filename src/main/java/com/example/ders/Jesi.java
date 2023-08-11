@@ -6,7 +6,6 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.pdf.PDFParser;
 import org.apache.tika.sax.BodyContentHandler;
-import org.codelibs.jhighlight.fastutil.Hash;
 import org.xml.sax.SAXException;
 
 import java.io.*;
@@ -30,32 +29,24 @@ public class Jesi {
         return bodyContentHandler.toString();
     }
 
-    public void index(String folderPath) throws TikaException, IOException, SAXException {
+    public void index(String folderPath){
         File directory = new File(folderPath);
-        File[] files = directory.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.isFile() &&
-                        pathname.getAbsolutePath()
-                                .toLowerCase().endsWith(".pdf");
-            }
-        });
+        File[] files = directory.listFiles(pathname -> pathname.isFile() &&
+                pathname.getAbsolutePath()
+                        .toLowerCase().endsWith(".pdf"));
         assert files != null;
-        long startTime = System.nanoTime();
         for (File file : files) {
             try {
                 String parsed = parsePDF(file.getAbsolutePath());
                 dexter.indexFile(parsed, file.getName());
                 System.out.println("Indexing file: " + file.getName() + "...");
             }
-            //System.out.println(fileIndex);
             catch (Exception e) {
                 System.out.println("ERROR : In reading file : " +
                         file.getName() + " due to: " + e.getMessage());
             }
 
         }
-        System.out.println("------"+(System.nanoTime()-startTime)/1_000_000_000+"------");
         fileIndex = dexter.getFileIndex();
     }
 
@@ -86,7 +77,7 @@ public class Jesi {
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                        (v1,v2)->v2, LinkedHashMap::new));
-    }//
+    }
 
     private double tf(int t, int d )
     {
@@ -98,8 +89,6 @@ public class Jesi {
         double numerator = fileIndex.size();
         double denominator = fileIndex.keySet().stream()
                 .filter(e->fileIndex.get(e).containsKey(token)).count()+1;
-
-        //System.out.println(token+"=>"+numerator + " " + denominator);
 
         return Math.log10(Math.max(numerator/denominator, 1));
     }

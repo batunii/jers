@@ -1,8 +1,6 @@
 package com.example.ders;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class Dexter {
@@ -19,9 +17,6 @@ public class Dexter {
                 index.put(token, 1);
 
         }
-
-        //System.out.println(index);
-
         return index;
     }
     public void indexFile(String content, String file_name)
