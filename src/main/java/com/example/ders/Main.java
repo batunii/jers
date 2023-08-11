@@ -1,9 +1,13 @@
 package com.example.ders;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileFilter;
 
 public class Main {
+    //private static Logger logger = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) throws Exception {
         System.out.println("Hello world!");
 //         Jesi jesi = new Jesi();
@@ -25,6 +29,8 @@ public class Main {
 //        }
 
         //System.out.println((new Jesi()).index("C:\\Users\\Shrey\\Downloads").orElseThrow());
+
+
 
         Jesi jesi = new Jesi();
         jesi.index("C:\\Users\\Shrey\\Desktop\\TestPDFs");

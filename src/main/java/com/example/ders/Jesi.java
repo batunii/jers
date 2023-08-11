@@ -1,17 +1,17 @@
 package com.example.ders;
 
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.pdf.PDFParser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.codelibs.jhighlight.fastutil.Hash;
 import org.xml.sax.SAXException;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Jesi {
 
@@ -21,10 +21,11 @@ public class Jesi {
         BodyContentHandler bodyContentHandler = new BodyContentHandler();
         File file = new File(filePath);
         FileInputStream inputStream = new FileInputStream(file);
+        InputStream stream = TikaInputStream.get(inputStream);
         Metadata data = new Metadata();
         ParseContext contex = new ParseContext();
         PDFParser parser = new PDFParser();
-        parser.parse(inputStream, bodyContentHandler, data, contex);
+        parser.parse(stream, bodyContentHandler, data, contex);
 
         return bodyContentHandler.toString();
     }
@@ -40,6 +41,7 @@ public class Jesi {
             }
         });
         assert files != null;
+        long startTime = System.nanoTime();
         for (File file : files) {
             try {
                 String parsed = parsePDF(file.getAbsolutePath());
@@ -53,32 +55,37 @@ public class Jesi {
             }
 
         }
+        System.out.println("------"+(System.nanoTime()-startTime)/1_000_000_000+"------");
         fileIndex = dexter.getFileIndex();
     }
 
-    public HashMap<String, Double> search(String searchTerm)
+    public Map<String, Double> search(String searchTerm)
     {
         HashMap<String, Double>score = new HashMap<>();
         ArrayList<String> tokens = (new Alexar()).tokenize(searchTerm);
-        for(String token : tokens)
-        {System.out.println(token);
+
             for(String fileName : fileIndex.keySet())
             {
-                if(fileIndex.get(fileName).containsKey(token))
+                System.out.println(fileName);
+                for(String token : tokens)
                 {
-                    double tf  = tf(fileIndex.get(fileName).get(token)
-                            ,fileIndex.get(fileName).size());
-                    double idf = idf(token);
-                    double tfIdf = tf*idf;
-                    System.out.println(token+" => "+tfIdf);
-                    score.computeIfPresent(fileName,
-                            (k,v)-> v+tfIdf);
-                    score.putIfAbsent(fileName,tfIdf);
+                    if(fileIndex.get(fileName).containsKey(token)) {
+                        double tf = tf(fileIndex.get(fileName).get(token)
+                                , fileIndex.get(fileName).size());
+                        double idf = idf(token);
+                        double tfIdf = tf * idf;
+                        score.computeIfPresent(fileName,
+                                (k, v) -> v + tfIdf);
+                        score.putIfAbsent(fileName, tfIdf);
+                        System.out.println(token + " => "+ tfIdf);
+                    }
                 }
             }
-        }
 
-        return score;
+        return score.entrySet().stream()
+                .sorted((e1, e2)->e2.getValue()>e1.getValue()?1:e2.getValue().equals(e1.getValue())?0:-1)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                        (v1,v2)->v2, LinkedHashMap::new));
     }
 
     private double tf(int t, int d )
@@ -96,4 +103,5 @@ public class Jesi {
 
         return Math.log10(Math.max(numerator/denominator, 1));
     }
+
 }
