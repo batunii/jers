@@ -1,9 +1,9 @@
-package com.example.ders;
+package org.redmark.jesi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Dexter {
+class Dexter {
     private final HashMap<String, HashMap<String, Integer>> fileIndex = new HashMap<>();
     private HashMap<String, Integer> giveIndex(ArrayList<String> tokens)
     {
@@ -19,13 +19,13 @@ public class Dexter {
         }
         return index;
     }
-    public void indexFile(String content, String file_name)
+    void indexFile(String content, String file_name)
     {
         HashMap<String, Integer> index = giveIndex(new Alexar().tokenize(content));
         fileIndex.put(file_name,index);
     }
 
-    public HashMap<String, HashMap<String, Integer>> getFileIndex() {
+    HashMap<String, HashMap<String, Integer>> getFileIndex() {
         return fileIndex;
     }
 }

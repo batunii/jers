@@ -1,4 +1,4 @@
-package com.example.ders;
+package org.redmark.jesi;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.TikaInputStream;
@@ -7,15 +7,21 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.pdf.PDFParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.xml.sax.SAXException;
-
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Jesi {
-
-    static HashMap<String, HashMap<String,Integer>> fileIndex = new HashMap<>();
-    Dexter dexter = new Dexter();
+public class Jesi{
+    Jesi(){}
+    private static HashMap<String, HashMap<String,Integer>> fileIndex = new HashMap<>();
+    private final Dexter dexter = new Dexter();
     private String parsePDF(String filePath) throws IOException, TikaException, SAXException {
         BodyContentHandler bodyContentHandler = new BodyContentHandler();
         File file = new File(filePath);
@@ -29,7 +35,7 @@ public class Jesi {
         return bodyContentHandler.toString();
     }
 
-    public void index(String folderPath){
+    void index(String folderPath){
         File directory = new File(folderPath);
         File[] files = directory.listFiles(pathname -> pathname.isFile() &&
                 pathname.getAbsolutePath()
@@ -38,7 +44,7 @@ public class Jesi {
         for (File file : files) {
             try {
                 String parsed = parsePDF(file.getAbsolutePath());
-                dexter.indexFile(parsed, file.getName());
+                dexter.indexFile(parsed, file.getAbsolutePath());
                 System.out.println("Indexing file: " + file.getName() + "...");
             }
             catch (Exception e) {
@@ -57,7 +63,6 @@ public class Jesi {
 
             for(String fileName : fileIndex.keySet())
             {
-                System.out.println(fileName);
                 for(String token : tokens)
                 {
                     if(fileIndex.get(fileName).containsKey(token)) {
@@ -68,7 +73,6 @@ public class Jesi {
                         score.computeIfPresent(fileName,
                                 (k, v) -> v + tfIdf);
                         score.putIfAbsent(fileName, tfIdf);
-                        System.out.println(token + " => "+ tfIdf);
                     }
                 }
             }

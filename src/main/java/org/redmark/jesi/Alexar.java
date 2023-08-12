@@ -1,8 +1,8 @@
-package com.example.ders;
+package org.redmark.jesi;
 
 import java.util.ArrayList;
 
-public class Alexar {
+class Alexar {
     ArrayList<String> tokens = new ArrayList<>();
     private char[] charTokenizer(String str)
     {
@@ -10,7 +10,7 @@ public class Alexar {
         return str.toCharArray();
 
     }
-    public ArrayList<String> tokenize(String content)
+    ArrayList<String> tokenize(String content)
     {
         char[] charTokens = charTokenizer(content);
         int n = 0;

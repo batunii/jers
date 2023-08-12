@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jpackage" name="derstest">
+    <output-path>$PROJECT_DIR$/out/artifacts/derstest</output-path>
+    <root id="root">
+      <element id="archive" name="derstest.jar">
+        <element id="module-output" name="JESI" />
+      </element>
+    </root>
+  </artifact>
+</component>
